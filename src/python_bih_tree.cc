@@ -7,25 +7,16 @@
 
 #include <pybind11/pybind11.h>
 //#include <pybind11/numpy.h>
-//#include <bounding_box.hh>
+#include <bounding_box.hh>
 //#include <bih_tree.hh>
 
 namespace py = pybind11;
 
-int add(int a, int b)
-{ return a+b;}
 
-class BoundingBox {
-public:
-    int i;
-};
 
 PYBIND11_PLUGIN(bih) {
     py::module m( "bih", "Bounding Inteval Hierarchy of Axes Aligned Bounding Boxes.");
-    m.def("add", &add);
-//    py::class_<BoundingBox>(m, "AABB")
-//          .def_readwrite("i", &BoundingBox::i);
-//    py::class_<BoundingBox>(m, "AABB");
+    py::class_<BoundingBox>(m, "AABB");
 //        .def(py::init<const vector<Point> &>())
 //        .def("min", (const Point&(BoundingBox::*)() const) &BoundingBox::min , py::return_value_policy::reference)  // need conversion to numpy array
 //        .def("max", (const Point&(BoundingBox::*)() const) &BoundingBox::max , py::return_value_policy::reference)  // need conversion to numpy array
@@ -101,6 +92,8 @@ PYBIND11_PLUGIN(bih) {
 //        .def(py::init<unsigned int>(), py::arg("soft_leaf_size_limit")  = 20);
 //        //.def("setName", &Pet::setName)
 //        //.def("getName", &Pet::getName);
+    return m.ptr();
+   
 }
 
 

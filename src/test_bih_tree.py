@@ -27,10 +27,12 @@ boxes = [ bih.AABB( [[p,0,0], [p+1, 1,1]]) for p in coords ]
 tree.add_boxes( boxes )
 tree.construct()
 intersect_box_ids = tree.find_point([0.7, 0.5, 0.5])
+intersect_box_ids.sort()
 assert intersect_box_ids == [0, 1]
 
 box = bih.AABB([[0.7, 0.5, 0.5], [1.3, 0.5,0.5]])
 intersect_box_ids = tree.find_box(box)
-assert intersect_box_ids == [0, 1, 2]
+intersect_box_ids.sort()
+assert intersect_box_ids == [0, 1, 2], "intersect_box_ids: {}".format(intersect_box_ids)
 
 print("Success.")

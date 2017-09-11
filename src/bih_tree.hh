@@ -140,7 +140,7 @@ protected:
     std::vector<double> coors_;
 
     // random generator
-    std::mt19937	r_gen;
+    //std::mt19937	r_gen;
 
 
 };

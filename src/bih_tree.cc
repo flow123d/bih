@@ -20,6 +20,7 @@
 
 //#include <ctime>
 #include <stack>
+#include <cmath>
 
 /**
  * Minimum reduction of box size to allow
@@ -29,7 +30,7 @@ const double BIHTree::size_reduce_factor = 0.8;
 
 
 BIHTree::BIHTree(unsigned int soft_leaf_size_limit)
-: leaf_size_limit(soft_leaf_size_limit), r_gen(123)
+: leaf_size_limit(soft_leaf_size_limit)     //, r_gen(123)
 {
 }
 
@@ -47,7 +48,7 @@ void BIHTree::add_boxes(const std::vector<BoundingBox> &boxes) {
 void BIHTree::construct() {
     ASSERT( elements_.size() > 0, " ");
 
-    max_n_levels = 2*log(elements_.size())/log(2);
+    max_n_levels = 2*log2(elements_.size());
     nodes_.reserve(2*elements_.size() / leaf_size_limit);
     in_leaves_.resize(elements_.size());
     for(unsigned int i=0; i<in_leaves_.size(); i++) in_leaves_[i] = i;

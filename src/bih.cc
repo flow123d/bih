@@ -15,12 +15,13 @@
  * @brief   
  */
 
-#include "bih_tree.hh"
-#include "bih_node.hh"
 
 //#include <ctime>
 #include <stack>
 #include <cmath>
+
+#include "bih_node.hh"
+#include "bih.hh"
 
 /**
  * Minimum reduction of box size to allow

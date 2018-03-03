@@ -8,8 +8,8 @@
 #include <pybind11/pybind11.h>
 //#include <pybind11/numpy.h>
 #include <pybind11/stl.h>
-#include <bounding_box.hh>
-#include <bih_tree.hh>
+#include "bih.hh"
+#include "bounding_box.hh"
 
 namespace py = pybind11;
 using namespace std;
@@ -38,8 +38,10 @@ std::vector<unsigned int> tree_find_box(BIHTree *tree, BoundingBox &box, bool fu
 }
 
 
-PYBIND11_PLUGIN(bih) {
-    py::module m( "bih", "Bounding Inteval Hierarchy of Axes Aligned Bounding Boxes.");
+// TODO: use PYBIND11_MODULE
+PYBIND11_MODULE(bih, m) {
+    //py::module m( "bih", );
+    m.doc() = "Bounding Inteval Hierarchy of Axes Aligned Bounding Boxes.";
     py::class_<BoundingBox>(m, "AABB")
         .def(py::init<const vector<Point> &>())
         .def("min", (const Point&(BoundingBox::*)() const) &BoundingBox::min , py::return_value_policy::reference)  // need conversion to numpy array
@@ -120,7 +122,7 @@ PYBIND11_PLUGIN(bih) {
                  py::arg("box"),  py::arg("full_list") = false)
         .def("find_point", &tree_find_point,
                  py::arg("point"),  py::arg("full_list") = false);
-    return m.ptr();
+    //return m.ptr();
    
 }
 

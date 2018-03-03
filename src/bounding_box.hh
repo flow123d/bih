@@ -55,20 +55,20 @@ struct Point
 
 };*/
 
-Point operator+(Point a, Point b) {
+inline Point operator+(Point a, Point b) {
     return Point( {a[0]+b[0], a[1]+b[1], a[2]+b[2]} );
 }
 
-Point operator-(Point a, Point b) {
+inline Point operator-(Point a, Point b) {
     return Point( {a[0]-b[0], a[1]-b[1], a[2]-b[2]} );
 }
 
-Point operator*(double a, Point b) {
+inline Point operator*(double a, Point b) {
     return Point( {a*b[0], a*b[1], a*b[2]} );
 }
 
 
-bool operator <=(Point a, Point b) {
+inline bool operator <=(Point a, Point b) {
     return
        a[0] <= b[0] &&
        a[1] <= b[1] &&

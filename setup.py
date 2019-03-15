@@ -5,7 +5,7 @@ import os
 import glob
 import setuptools
 
-__version__ = '0.0.1'
+__version__ = '1.0.0'
 
 
 class get_pybind_include(object):
@@ -28,7 +28,7 @@ def get_sources(root, patterns):
     for p in patterns:
         for path in glob.glob(os.path.join(root, p)):
             print("Path: ", path)
-            sources.append(path)
+            sources.append(os.path.abspath(path))
     return sources
 
 ext_modules = [
@@ -36,7 +36,7 @@ ext_modules = [
         'bih',
         get_sources('src', ['bih.cc', 'python_bih.cc']),
         include_dirs=[
-            'src',
+            os.path.abspath('src'),
             # Path to pybind11 headers
             get_pybind_include(),
             get_pybind_include(user=True)
@@ -101,7 +101,8 @@ class BuildExt(build_ext):
 
 
         
-
+with open("README.md", "r") as fh:
+    long_description = fh.read()
 
 
 setuptools.setup(
@@ -109,22 +110,18 @@ setuptools.setup(
     version=__version__,
     license='GPL 3.0',
     description='Bounded Interval Hierarchy.',
-    long_description='',    
+    long_description=long_description,    
     author='Jan Brezina',
     author_email='jan.brezina@tul.cz',    
     url='https://github.com/flow123d/bih',
 
     classifiers=[
-        # complete classifier list: http://pypi.python.org/pypi?%3Aaction=list_classifiers
-        'Development Status :: 2 - Pre-Alpha',
-        'Intended Audience :: Science/Research',
+        # complete classifier list: http://pypi.python.org/pypi?%3Aaction=list_classifiers        
         'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
         'Operating System :: Unix',
         'Operating System :: POSIX',
         'Operating System :: Microsoft :: Windows',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: Implementation :: CPython',
-        'Programming Language :: Python :: Implementation :: PyPy',
+        'Programming Language :: Python :: 3',        
         # uncomment if you test on these interpreters:
         # 'Programming Language :: Python :: Implementation :: IronPython',
         # 'Programming Language :: Python :: Implementation :: Jython',

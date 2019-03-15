@@ -1,3 +1,6 @@
+# Tox
+.tox/*
+
 # Prerequisites
 *.d
 

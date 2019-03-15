@@ -1,6 +1,20 @@
 # Tox
 .tox/*
 
+# Pycharm
+.idea/*
+.project
+.cproject
+.cache/*
+.pytest_cache/*
+.settings/*
+
+# Python packaging
+dist/*
+src/bih.egg-info/*
+
+*.pyc
+
 # Prerequisites
 *.d
 

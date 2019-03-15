@@ -5,7 +5,7 @@ import os
 import glob
 import setuptools
 
-__version__ = '1.0.0'
+__version__ = '1.0.1'
 
 
 class get_pybind_include(object):
@@ -18,17 +18,19 @@ class get_pybind_include(object):
         self.user = user
 
     def __str__(self):
-        print("CWD bind:", os.getcwd())
+        #print("CWD bind:", os.getcwd())
         import pybind11
         return pybind11.get_include(self.user)
 
+
+
 def get_sources(root, patterns):
-    print("CWD :", os.getcwd())
+    #print("CWD :", os.getcwd())
     sources = []
     for p in patterns:
         for path in glob.glob(os.path.join(root, p)):
             print("Path: ", path)
-            sources.append(os.path.abspath(path))
+            sources.append(path)
     return sources
 
 ext_modules = [
@@ -36,7 +38,7 @@ ext_modules = [
         'bih',
         get_sources('src', ['bih.cc', 'python_bih.cc']),
         include_dirs=[
-            os.path.abspath('src'),
+            'src',
             # Path to pybind11 headers
             get_pybind_include(),
             get_pybind_include(user=True)
@@ -110,7 +112,8 @@ setuptools.setup(
     version=__version__,
     license='GPL 3.0',
     description='Bounded Interval Hierarchy.',
-    long_description=long_description,    
+    long_description=long_description,
+    long_description_content_type="text/markdown",
     author='Jan Brezina',
     author_email='jan.brezina@tul.cz',    
     url='https://github.com/flow123d/bih',
@@ -147,6 +150,7 @@ setuptools.setup(
     include_package_data=True,
     zip_safe=False,
     install_requires=['pybind11>=2.2'],
+    python_requires='>=3',
     extras_require={
         # eg:
         #   'rst': ['docutils>=0.11'],

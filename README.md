@@ -1,14 +1,19 @@
 # BIH
 Bounded Interval Hierachy of Axes Aligned Bounding Boxes
 
-## Install
-- mkdir build
-- cd build
-- cmake ..
-- make
+## Python install
+```python setup.py install```
 
-run test binary:
-- ./test_bih_tree
+test:
+```tox``
 
-run python test:
-- ../src/test_bih_tree.py
+## C++ build
+
+    mkdir build
+    cd build
+    cmake ..
+    make
+
+test binary:
+```./test_bih_tree```
+

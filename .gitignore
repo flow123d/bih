@@ -47,3 +47,5 @@ src/bih.egg-info/*
 *.exe
 *.out
 *.app
+
+build/**

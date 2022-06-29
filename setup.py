@@ -149,7 +149,7 @@ setuptools.setup(
     # include automatically all files in the template MANIFEST.in
     include_package_data=True,
     zip_safe=False,
-    install_requires=['pybind11>=2.2'],
+    install_requires=['numpy>=1.13.4'], # pybind11>=2.2
     python_requires='>=3',
     extras_require={
         # eg:

@@ -1,0 +1,197 @@
+# This workflows will upload a Python Package using Twine when a release is created
+# For more information see: https://help.github.com/en/actions/language-and-framework-guides/using-python-with-github-actions#publishing-to-package-registries
+
+# Status: 
+# - verified action triggered by the new release.
+# - correct upload to with test.pypi
+# - correct installation from test.pypi.org: pip install --index-url https://test.pypi.org/simple/ publish-test
+
+name: Upload Python Package
+
+on:
+  push:
+    branches:
+      - main
+      # Release branches
+      - "[0-9]+.[0-9]+.X"  
+  pull_request:
+    branches:
+      - main
+      - "[0-9]+.[0-9]+.X"
+      
+jobs:
+  build_wheels:
+    name: Build wheel for cp${{ matrix.python }}-${{ matrix.platform_id }}-${{ matrix.manylinux_image }}
+    runs-on: ${{ matrix.os }}
+    #needs: check_build_trigger
+    #if: needs.check_build_trigger.outputs.build
+
+    strategy:
+      # Ensure that a wheel builder finishes even if another fails
+      fail-fast: false
+      matrix:
+        # Explicit list of OS, platforms and python versions passed to CIBW in order
+        # evaluate them in parallel and see progress in Github actions
+        include:        
+          # Window 64 bit
+          # Note: windows-2019 is needed for older Python versions:
+          # https://github.com/scikit-learn/scikit-learn/issues/22530
+          - os: windows-2019
+            python: 38
+            bitness: 64
+            platform_id: win_amd64
+          - os: windows-latest
+            python: 39
+            bitness: 64
+            platform_id: win_amd64
+          - os: windows-latest
+            python: 310
+            bitness: 64
+            platform_id: win_amd64
+
+          # Window 32 bit
+          - os: windows-latest
+            python: 38
+            bitness: 32
+            platform_id: win32
+          - os: windows-latest
+            python: 39
+            bitness: 32
+            platform_id: win32
+
+          # Linux 64 bit manylinux2014
+          - os: ubuntu-latest
+            python: 38
+            bitness: 64
+            platform_id: manylinux_x86_64
+            manylinux_image: manylinux2014
+          - os: ubuntu-latest
+            python: 39
+            bitness: 64
+            platform_id: manylinux_x86_64
+            manylinux_image: manylinux2014
+
+          # NumPy on Python 3.10 only supports 64bit and is only available with manylinux2014
+          - os: ubuntu-latest
+            python: 310
+            bitness: 64
+            platform_id: manylinux_x86_64
+            manylinux_image: manylinux2014
+
+          # MacOS x86_64
+          - os: macos-latest
+            bitness: 64
+            python: 38
+            platform_id: macosx_x86_64
+          - os: macos-latest
+            bitness: 64
+            python: 39
+            platform_id: macosx_x86_64
+          - os: macos-latest
+            bitness: 64
+            python: 310
+            platform_id: macosx_x86_64
+
+          # MacOS arm64
+          - os: macos-latest
+            bitness: 64
+            python: 38
+            platform_id: macosx_arm64
+          - os: macos-latest
+            bitness: 64
+            python: 39
+            platform_id: macosx_arm64
+          - os: macos-latest
+            bitness: 64
+            python: 310
+            platform_id: macosx_arm64  
+
+        
+    steps:
+      - uses: actions/checkout@v3
+
+      # Used to host cibuildwheel
+      - uses: actions/setup-python@v3
+
+      - name: Install pip packages
+        run: |
+          python -m pip install --upgrade pip
+          pip install setuptools wheel twine
+
+      - name: Install cibuildwheel
+        run: python -m pip install cibuildwheel==2.7.0
+
+      - name: Build and test wheels
+        # to supply options, put them in 'env', like:
+        env:
+        
+          
+          CIBW_BEFORE_BUILD: pip install -r requirements.txt
+          
+          #CONFTEST_PATH: ${{ github.workspace }}/conftest.py
+          #CONFTEST_NAME: conftest.py
+          CIBW_BUILD_VERBOSITY: 1
+          CIBW_BUILD: cp${{ matrix.python }}-${{ matrix.platform_id }}
+          CIBW_ARCHS: all
+          CIBW_MANYLINUX_X86_64_IMAGE: ${{ matrix.manylinux_image }}
+          CIBW_MANYLINUX_I686_IMAGE: ${{ matrix.manylinux_image }}
+          CIBW_TEST_SKIP: "*-macosx_arm64"
+          #CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: bash build_tools/github/repair_windows_wheels.sh {wheel} {dest_dir} ${{ matrix.bitness }}
+          #CIBW_BEFORE_TEST_WINDOWS: bash build_tools/github/build_minimal_windows_image.sh ${{ matrix.python }} ${{ matrix.bitness }}
+          CIBW_TEST_REQUIRES: pytest numpy
+          CIBW_TEST_COMMAND_WINDOWS: bash {project}/build_tools/github/test_windows_wheels.sh ${{ matrix.python }} ${{ matrix.bitness }}
+          #CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: bash build_tools/github/repair_windows_wheels.sh {wheel} {dest_dir} ${{ matrix.bitness }}
+          #CIBW_BEFORE_TEST_WINDOWS: bash build_tools/github/build_minimal_windows_image.sh ${{ matrix.python }} ${{ matrix.bitness }}
+          #CIBW_TEST_REQUIRES: pytest pandas threadpoolctl
+          CIBW_TEST_COMMAND: pytest {package}/tests
+          #CIBW_TEST_COMMAND_WINDOWS: bash {project}/build_tools/github/test_windows_wheels.sh ${{ matrix.python }} ${{ matrix.bitness }}
+        run: python -m cibuildwheel --output-dir dist
+
+      - uses: actions/upload-artifact@v3
+        with:
+          #name: wheels
+          path: dist/*.whl    
+     
+  make_sdist:
+    name: Make SDist
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Build SDist
+      run: pipx run build --sdist
+
+    - uses: actions/upload-artifact@v2
+      with:
+        #name: sdist
+        path: dist/*.tar.gz      
+
+        
+  upload_all:
+    needs: [build_wheels, make_sdist]
+    runs-on: ubuntu-latest
+    #if: github.event_name == 'release' && github.event.action == 'published'
+    steps:
+    - uses: actions/download-artifact@v2
+      with:
+        #name: wheels
+        path: dist
+
+    #- uses: actions/download-artifact@v2
+      #with:
+        #name: sdist
+        #path: dist
+
+    #- uses: pypa/gh-action-pypi-publish@v1.4.2
+      #with:
+        #user: ${{ secrets.PYPI_JBREZ_USER }}
+        #password: ${{ secrets.PYPI_JBREZ_PASS }}
+
+    #- name: PYPI publish
+      #env:
+        #TWINE_USERNAME: 
+        #TWINE_PASSWORD: ${{ secrets.PYPI_JBREZ_PASS }}
+      #run: |
+        #python setup.py sdist bdist_wheel
+        #twine upload dist/*
+        #twine upload --repository-url https://test.pypi.org/legacy/ dist/*

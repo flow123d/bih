@@ -118,6 +118,7 @@ PYBIND11_MODULE(bih, m) {
         .def(py::init<unsigned int>(), py::arg("soft_leaf_size_limit")  = 20)
         .def("add_boxes", &BIHTree::add_boxes)
         .def("construct", &BIHTree::construct)
+        .def("aabb", &BIHTree::tree_box)
         .def("find_box", &tree_find_box,
                  py::arg("box"),  py::arg("full_list") = false)
         .def("find_point", &tree_find_point,

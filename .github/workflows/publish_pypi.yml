@@ -20,7 +20,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, windows-2019, macOS-10.15]
+        os: [ubuntu-24.04, ubuntu-20.04, windows-2025, windows-2022, windows-2019]
 
         
     steps:

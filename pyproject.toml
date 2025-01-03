@@ -1,4 +1,28 @@
-# Proposed setup configuration file
+[tool.poetry]
+name = "bih"
+version = "1.0.2"
+description = "Bounded Interval Hierarchy"
+authors = ["Jan Brezina <jan.brezina@tul.cz>"]
+license = "GPL-3.0"
+readme = "README.md"
+homepage = "https://github.com/flow123d/bih"
+
+# Explicitly include the built extension module
+#packages = [
+#    { include = "bih" }
+#]
+
+[tool.poetry.dependencies]
+python = ">=3.6"  # Correct way to specify Python version support
+numpy = ">=1.13.4"
+
+[tool.poetry.dev-dependencies]
+pytest = "^7.0"
+pybind11 = ">=2.6.1"
+
 [build-system]
-requires = ["setuptools>=42", "wheel", "pybind11~=2.6.1"]
+requires = ["setuptools>=42", "wheel", "pybind11>=2.6.1"]
 build-backend = "setuptools.build_meta"
+
+[tool.poetry.scripts]
+# Define any CLI entry points here if needed

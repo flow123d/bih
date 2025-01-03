@@ -64,15 +64,11 @@ jobs:
     
     needs: [build_wheels, make_sdist]
     runs-on: ubuntu-latest
-    #if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
+    if: startsWith(github.ref, 'refs/tags')
     #if: github.event_name == 'release' && github.event.action == 'published'
     permissions:
       id-token: write  # IMPORTANT: this permission is mandatory for trusted publishing
       contents: read   # Required for accessing the repository
-    on:
-      push:
-        tags:
-          - "v*"
     steps:
       - name: Set OS list from workflow matrix
         id: set-matrix

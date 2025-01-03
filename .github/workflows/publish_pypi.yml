@@ -89,10 +89,10 @@ jobs:
           path: dist/sdist
 
       - name: Debug OIDC Token
-          env:
+        env:
             ACTIONS_ID_TOKEN_REQUEST_URL: ${{ secrets.ACTIONS_ID_TOKEN_REQUEST_URL }}
             ACTIONS_ID_TOKEN_REQUEST_TOKEN: ${{ secrets.ACTIONS_ID_TOKEN_REQUEST_TOKEN }}
-          run: |
+        run: |
             echo "OIDC Token URL: $ACTIONS_ID_TOKEN_REQUEST_URL"
             echo "OIDC Token Request Token: $ACTIONS_ID_TOKEN_REQUEST_TOKEN"
       

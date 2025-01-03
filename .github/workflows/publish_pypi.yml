@@ -88,6 +88,14 @@ jobs:
           name: sdist
           path: dist/sdist
 
+      - name: Debug OIDC Token
+          env:
+            ACTIONS_ID_TOKEN_REQUEST_URL: ${{ secrets.ACTIONS_ID_TOKEN_REQUEST_URL }}
+            ACTIONS_ID_TOKEN_REQUEST_TOKEN: ${{ secrets.ACTIONS_ID_TOKEN_REQUEST_TOKEN }}
+          run: |
+            echo "OIDC Token URL: $ACTIONS_ID_TOKEN_REQUEST_URL"
+            echo "OIDC Token Request Token: $ACTIONS_ID_TOKEN_REQUEST_TOKEN"
+      
       - name: Combine artifacts into a single folder
         run: |
           mkdir -p final_dist
@@ -99,6 +107,7 @@ jobs:
       - uses: pypa/gh-action-pypi-publish@v1.4.2
         
         with:
+          verbose: true
           packages_dir: final_dist
           # Using Trusted Publishing, no user + pass necessary
           # user: ${{ secrets.PYPI_JBREZ_USER }}

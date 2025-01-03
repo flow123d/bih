@@ -61,9 +61,13 @@ jobs:
           path: dist/*.tar.gz      
          
   upload_all:
+    
     needs: [build_wheels, make_sdist]
     runs-on: ubuntu-latest
+    #if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
     #if: github.event_name == 'release' && github.event.action == 'published'
+    permissions:
+      id-token: write  # IMPORTANT: this permission is mandatory for trusted publishing
     steps:
       - name: Set OS list from workflow matrix
         id: set-matrix
@@ -92,16 +96,11 @@ jobs:
           ls -l final_dist
           
       - uses: pypa/gh-action-pypi-publish@v1.4.2
+        
         with:
           packages_dir: final_dist
-          user: ${{ secrets.PYPI_JBREZ_USER }}
-          password: ${{ secrets.PYPI_JBREZ_PASS }}
+          # Using Trusted Publishing, no user + pass necessary
+          # user: ${{ secrets.PYPI_JBREZ_USER }}
+          # password: ${{ secrets.PYPI_JBREZ_PASS }}
 
-    #- name: PYPI publish
-      #env:
-        #TWINE_USERNAME: 
-        #TWINE_PASSWORD: ${{ secrets.PYPI_JBREZ_PASS }}
-      #run: |
-        #python setup.py sdist bdist_wheel
-        #twine upload dist/*
-        #twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+ 

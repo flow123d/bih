@@ -50,13 +50,13 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-    - name: Build SDist
-      run: pipx run build --sdist
+      - name: Build SDist
+        run: pipx run build --sdist
 
-    - uses: actions/upload-artifact@v4
-      with:
-        name: sdist
-        path: dist/*.tar.gz      
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sdist
+          path: dist/*.tar.gz      
          
   upload_all:
     needs: [build_wheels, make_sdist]

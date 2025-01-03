@@ -68,6 +68,11 @@ jobs:
     #if: github.event_name == 'release' && github.event.action == 'published'
     permissions:
       id-token: write  # IMPORTANT: this permission is mandatory for trusted publishing
+      contents: read   # Required for accessing the repository
+    on:
+      push:
+        tags:
+          - "v*"
     steps:
       - name: Set OS list from workflow matrix
         id: set-matrix

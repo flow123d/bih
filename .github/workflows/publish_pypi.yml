@@ -93,7 +93,7 @@ jobs:
           
       - uses: pypa/gh-action-pypi-publish@v1.4.2
         with:
-          packages-dir: final_dist
+          packages_dir: final_dist
           user: ${{ secrets.PYPI_JBREZ_USER }}
           password: ${{ secrets.PYPI_JBREZ_PASS }}
 

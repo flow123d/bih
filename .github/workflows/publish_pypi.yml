@@ -104,7 +104,7 @@ jobs:
           cp dist/sdist/* final_dist
           ls -l final_dist
           
-      - uses: pypa/gh-action-pypi-publish@v1.4.2
+      - uses: pypa/gh-action-pypi-publish@v1.13.0
         
         with:
           verbose: true
